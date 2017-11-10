@@ -1,0 +1,86 @@
+<!-- DOCTYPE HTML -->
+<html>
+<head>
+<title>Todo app</title>
+</head>
+<body>
+<div id="content"></div>
+<script src="https://fb.me/react-15.0.0.js"></script>
+<script src="https://fb.me/react-dom-15.0.0.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+<script type="text/babel">
+
+
+var TodoInput = React.createClass({
+    render: function() {
+      return (
+          <div>
+              <input type="text" value={this.props.inputValue} onChange={this.props.handleChange}/>
+              <button onClick={this.props.handleClick}>Add To Do</button>
+          </div>
+      )
+    }
+});
+
+var ToDoList = React.createClass({
+    render: function() {
+        var state = this;
+        var todos = this.props.todos.map(function(todo, index){
+            return <li id={index} onClick={state.props.handleClick} key={index}>{todo}</li>;
+        });
+        return(
+            <div>
+                <ul>
+                    {todos}
+                </ul>
+            </div>
+        )
+    }
+});
+
+
+
+var TodoApp = React.createClass({
+    getInitialState: function() {
+      return {
+          todos: ["buy food", "make food", "eat food"],
+          inputValue: '',
+          indexToRemove: 0
+      }
+    },
+    updateInputValue: function(evt) {
+        this.setState({
+            inputValue: evt.target.value
+        });
+    },
+    addToDo: function() {
+        var newtodolist = this.state.todos.concat(this.state.inputValue);
+        this.setState({
+            todos:  newtodolist,
+            inputValue: ''
+        });
+    },
+    removeToDo: function(evt) {
+        var newtodolist = this.state.todos;
+        console.log(evt.target.id);
+        newtodolist.splice(evt.target.id, 1);
+        this.setState({
+            todos:  newtodolist
+        });
+    },
+    render: function(){
+        return (
+            <div>
+                <h1>To Do List</h1>
+                <TodoInput inputValue={this.state.inputValue} handleClick={this.addToDo} handleChange={this.updateInputValue}/>
+                <ToDoList todos={this.state.todos} handleClick={this.removeToDo} indexToRemove={this.state.indexToRemove}/>
+            </div>
+        );
+    },
+});
+
+ReactDOM.render(<TodoApp />, document.getElementById('content'));
+
+</script>
+</body>
+</html>
